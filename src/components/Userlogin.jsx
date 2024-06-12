@@ -4,8 +4,8 @@ import styles from './Userlogin.module.css'
 export const Userlogin = () => {
   return (
     <div className={styles.main_container}>
-
-<div className={styles.box}>
+       <div className={styles.container_body}>
+       <div className={styles.box}>
     <div className={styles.form}>
             <h2>Sign In</h2>
         <div className={styles.inputBox}><input type="text" required="required"/><span>Username</span>
@@ -18,8 +18,8 @@ export const Userlogin = () => {
             </div>
             <input type="submit" value="Login" />
         </div>
-        </div>
-
+       </div>
+       </div>
     </div>
   )
 }

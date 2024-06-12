@@ -16,7 +16,7 @@ const {carts} = useSelector((state)=>state.allCart);
                     <h4 className='text-light'>Hotel Billing System</h4>
                     </NavLink>
                     
-              <h5 className='text-light'>Hotel Panchavati</h5>
+              <h5 className='text-light'>Hotel Name</h5>
 
                   {/*  <NavLink to="/cart" className="text-decoration-none text-light mx-2">
                     <div id='ex4'>
@@ -26,7 +26,7 @@ const {carts} = useSelector((state)=>state.allCart);
                     </div>
                     </NavLink>*/}
 <div className='d-flex flex-column'>
-    <div>Mr. Nitin Telang</div>
+    <div>Mr. Admin Admin</div>
     <NavLink to="/cart" className="text-white mx-5">            
     <i class="bi bi-power"></i>
     </NavLink>
