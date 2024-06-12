@@ -74,10 +74,10 @@ const handleSubmit = async (e) =>{
    <ul className={styles.listcontainer}>
               
     <li>
-        <NavLink to="/" className='text-decoration-none  text-dark px-0 align-middle '>HOME</NavLink>  
+        <NavLink to="/home" className='text-decoration-none  text-dark px-0 align-middle '>HOME</NavLink>  
      </li>
      <li>
-        <NavLink to="/items" className='text-decoration-none  text-dark px-0 align-middle'>Menu Item</NavLink>  
+        <NavLink to="/home/items" className='text-decoration-none  text-dark px-0 align-middle'>Menu Item</NavLink>  
      </li>
 
      <li>
@@ -89,17 +89,17 @@ const handleSubmit = async (e) =>{
 
 
      <li>
-        <NavLink to="/" className='text-decoration-none  text-dark px-0 align-middle'>Report</NavLink>  
+        <NavLink to="/home" className='text-decoration-none  text-dark px-0 align-middle'>Report</NavLink>  
      </li>
 
 
      <li>
-        <NavLink to="/" className='text-decoration-none  text-dark px-0 align-middle'>Hotel Profile</NavLink>  
+        <NavLink to="/home" className='text-decoration-none  text-dark px-0 align-middle'>Hotel Profile</NavLink>  
      </li>
 
 
      <li>
-        <NavLink to="/" className='text-decoration-none  text-dark px-0 align-middle'>Contact Us</NavLink>  
+        <NavLink to="/home" className='text-decoration-none  text-dark px-0 align-middle'>Contact Us</NavLink>  
      </li>
  </ul>
  

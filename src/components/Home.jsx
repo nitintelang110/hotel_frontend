@@ -8,6 +8,9 @@ import toast from 'react-hot-toast';
 import CartDetails from './CartDetails';
 import axios from 'axios';
 import moment from 'moment'
+import CardsData from "./CardData";
+import {Navbar} from "./Navbar";
+import {Headers} from "./Headers";
 
 
 const Home = () => {
@@ -23,19 +26,19 @@ const Home = () => {
   const [counterId,setCounterId] = useState()
   const [menuCartPlease, setMenuCartPlease] = useState();
   const [orderDetails,setOrderDetails]  = useState([]);
- 
-  console.log(orderDetails)
+  const [cartData, setCartData] = useState(CardsData);
 
+ 
     const dispatch = useDispatch();
+
     
   const timer = moment().format('LTS');
     
-    // add to cart 
-    const send = (e)=>{
-       dispatch(addToCart(e))
-       toast.success("Item added In Your Cart")
+       // add to cart 
+       const send = (e)=>{
+        dispatch(addToCart(e))
+        toast.success("Item added In Your Cart")
     }
-
 
       useEffect(()=>{
 
@@ -153,45 +156,64 @@ const Home = () => {
   
    
   const handleDelete = (id) => {
-     
-    axios.delete("http://localhost:8000/api/counter/delete/counter/"+id).then(result => {
-      if (result.data.Status) {
-     
-        Swal.fire({
-          title: "Are you sure?",
-          text: "You won't be able to revert this!",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, delete it!"
-        }).then((result) => {
-          if (result.isConfirmed) {
-            Swal.fire({
+
+
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success",
+        cancelButton: "btn btn-danger"
+      },
+      buttonsStyling: false
+    });
+    swalWithBootstrapButtons.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "No, cancel!",
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+
+        axios.delete("http://localhost:8000/api/counter/delete/counter/"+id).then(result => {
+          if (result.data.Status) {
+          
+            swalWithBootstrapButtons.fire({
               title: "Deleted!",
               text: "Your file has been deleted.",
               icon: "success"
+            }).then((result)=>{
+              if(result.isConfirmed){
+                location.reload()
+              }
             });
-              location.reload()
-          }
+             
+          } 
+        }
+        )
+      } else if (
+        /* Read more about handling dismissals below */
+        result.dismiss === Swal.DismissReason.cancel
+      ) {
+        swalWithBootstrapButtons.fire({
+          title: "Cancelled",
+          text: "Your file is safe :)",
+          icon: "error"
         });
-
-      
-      
-      } else {
-        alert(result.data.Error)
       }
-    }
-    )
+    });
+     
+ 
     
     
   }
   
-  const menuItemModal = (id) => {
+ /* const menuItemModal = (id) => {
     setCounterId(id)
     setMenuCartItem(!menuCartItem)
      document.body.style.overflowY = 'hidden';
-  }
+  }*/
 
 
 
@@ -208,7 +230,7 @@ const Home = () => {
  
     return (
       <>
-        {menuCartItem && 
+         {/*  {menuCartItem && 
           <div className="modal_container">
        
           <div className=" d-flex flex-column shadow" id="modal" data-aos="zoom-in">
@@ -216,7 +238,7 @@ const Home = () => {
         
               <div>
                 
-    {menuItem.filter((data)=> searchName === ""? data : data.item.includes(`${searchName.toUpperCase()}`)).filter((data)=> searchCategory === ""? data : data.category === `${searchCategory}`).map((c,id)=>{
+  {menuItem.filter((data)=> searchName === ""? data : data.item.includes(`${searchName.toUpperCase()}`)).filter((data)=> searchCategory === ""? data : data.category === `${searchCategory}`).map((c,id)=>{
   return(<>
     
     <div  className="d-flex w-25 " >
@@ -237,7 +259,7 @@ const Home = () => {
 </>
 )
 })}
-                {/* <table className=' w-75 mx-2 mt-3'>
+                <table className=' w-75 mx-2 mt-3'>
               <thead>
                 <tr id="tbl_head_row">
                 </tr>
@@ -254,27 +276,72 @@ const Home = () => {
 )
 })}
               </tbody>
-                      </table>   */ } 
+                      </table>  
+
+
+<section className='iteam_section mt-4 container'>
+                <h2 className='px-0' style={{ fontWeight: 400 }}>Restaurants Menu</h2>
+                <div className='row mt-2 d-flex justify-content-around align-items-center'>
+                    {
+                        cartData.map((element, index) => {
+                            return (
+                                <>
+                                    <Card style={{ width: "22rem", border: "none" }} className='hove mb-4'>
+                                        <Card.Img variant='top' className='cd' src={element.imgdata}/>
+
+                                        <div className="card_body">
+                                            <div className="upper_data d-flex justify-content-between align-items-center">
+                                                <h4 className='mt-2'>{element.dish}</h4>
+                                                <span>{element.rating}&nbsp;★</span>
+                                            </div>
+
+                                            <div className="lower_data d-flex justify-content-between ">
+                                                <h5>{element.address}</h5>
+                                                <span>₹ {element.price}</span>
+                                            </div>
+                                            <div className="extra"></div>
+
+                                            <div className="last_data d-flex justify-content-between align-items-center">
+                                                <img src={element.arrimg} className='limg' alt="" />
+                                                <Button style={{ width: "150px", background: "#ff3054db", border: "none" }} variant='outline-light'
+                                                    className='mt-2 mb-2'
+                                                    onClick={()=>send(element)}
+                                                >Add TO Cart</Button>
+                                                <img src={element.delimg} className='laimg' alt="" />
+
+                                            </div>
+                                        </div>
+                                    </Card>
+                                </>
+                            )
+                        })
+                    }
+
+                </div>
+            </section>
                 
 
               </div>
         <button type="submit" className="btn btn-info rounded-0 mt-4" onClick={handleSubmit3}>SUBMIT</button>
       </div>
   </div>
+  
+  } */ } 
       
-      }
+      <Headers/>
+      <Navbar/>
         
         <div className='d-flex flex-row col-md-11 iteam_section mb-5 bg-light '>
             <section className=' mt-4 col-md-7'>
-                <h4 className='px-4 mb-4 col-md-12' style={{ fontWeight: 400}}>Counter Tables</h4>
-                <div className='row mt-2 mx-3 d-flex justify-content-around align-items-center'>
+                <h4 className='mb-4 col-md-12' style={{ fontWeight: 400}}>Counter Tables</h4>
+                <div className='row mt-2 mx-3 d-flex justify-content-start align-items-center'>
                     {
                         counterStatus.map((element, index) => {
                             return (
                                 <>
                                     {element.counter_status == 'BOOK' ? 
                                   
-                                 <Card style={{ width: "13rem",height: "15rem", border: "none",backgroundColor:"pink" }} className='hove mb-4'  >
+                                 <Card style={{ width: "13rem",height: "10rem", border: "1px solid brown",backgroundColor:"pink" }} className='hove mb-4 mx-1'  >
                                     
 
                                         <div className="card_body" key={index}>
@@ -287,14 +354,14 @@ const Home = () => {
                                       <div className="extra"></div>
                                       
 
-                                              <h5 className='text-center pt-2'>BOOKED</h5>
+                                              
                                             <div className="lower_data d-flex flex-column  align-items-center justify-content-center   ">
                                           
 
-                                                <Button style={{ width: "100px",fontWeight: '700', border: "none",backgroundColor:'brown',borderRadius:'100%'}} variant='outline-light'
-                                                    className='mt-3 mb-4 text-light'
+                                                <Button style={{ width: "100px",fontWeight: '700', border: "none",backgroundColor:'brown'}} variant='outline-light'
+                                                    className='mt-3 mb-2 text-light'
                                                     onClick={(e)=>handleSubmits(e,element.id)}
-                                                    >REOPEN</Button>
+                                                    >BOOKED</Button>
                                                     <div style={{ width: "140px", border: "none",fontWeight:"700" }} variant='outline-light'
                                                     className='ml-5 text-dark'>{element.book_time}</div>
                                                   
@@ -302,6 +369,8 @@ const Home = () => {
                                             </div>
 
                                             <div className="extra"></div>
+
+                                           {/*
 
                                             <div className="last_data d-flex justify-content-between align-items-center ">
                                           
@@ -314,14 +383,14 @@ const Home = () => {
                                                 >Add Item To Bill</Button>
                                              
 
-                                            </div>
+                                            </div>*/}
                                         </div>
                                         </Card>
                                         
                                         :
 
 
-                                          <Card style={{ width: "13rem",height: "15rem", border: "none",backgroundColor:"#b0ebb4" }} className='hove mb-4'>
+                                          <Card style={{ width: "13rem",height: "10rem", border: "1px solid green",backgroundColor:"#b0ebb4" }} className='hove mb-4 mx-1'>
                                       {/* <Card.Img variant='top' className='cd' src={element.imgdata}/>*/}
 
                                         <div className="card_body" key={index}>
@@ -339,8 +408,8 @@ const Home = () => {
                                             <div className="lower_data d-flex flex-column  align-items-center justify-content-center   ">
                                                {/* <h5>{element.address}</h5> 
                                                 <span>₹ {element.price}</span>*/} 
-                                                <Button style={{ width: "100px",fontWeight: '700', border: "none",backgroundColor:'green',borderRadius:'100%'}} variant='outline-light'
-                                                    className='mt-5 mb-4 text-light'
+                                                <Button style={{ width: "100px",fontWeight: '700', border: "none",backgroundColor:'green'}} variant='outline-light'
+                                                    className='mt-2 mb-2 text-light'
                                                     onClick={(e)=>handleSubmit(e,element.id)}
                                         >OPEN</Button>
                                                     { /*<img src={element.delimg} className='laimg mb-4' alt="" style={{ width: "80px", height: "25px", border: "none" }} /> */}
@@ -348,7 +417,10 @@ const Home = () => {
                                             </div>
                                               <div style={{ width: "140px", border: "none",fontWeight:"700" }} variant='outline-light'
                                                     className='ml-5 text-dark'>{element.book_time}</div>
-                                            <div className="extra"></div>
+
+                                             <div className="extra"></div>
+                                           
+                                           {/* 
 
                                             <div className="last_data d-flex justify-content-between align-items-center ">
                                     
@@ -359,7 +431,7 @@ const Home = () => {
                                                 >Ready To Book</Button>
                                              
 
-                                            </div>
+                                            </div>*/}
                                         </div>
                                         </Card>
 
@@ -378,10 +450,53 @@ const Home = () => {
 
                 <section className='mt-4 col-md-5 '>
                   
-                    <CartDetails orderDetails={orderDetails}/>
-                    
+                  {/* <CartDetails orderDetails={orderDetails}/>*/}
+    
+                  <CartDetails/>
             </section>
         </div>
+
+
+        <section className='iteam_section mt-4 container'>
+                <h2 className='px-0' style={{ fontWeight: 400 }}>Restaurants Menu</h2>
+                <div className='row mt-2 d-flex justify-content-around align-items-center'>
+                    {
+                        cartData.map((element, index) => {
+                            return (
+                                <>
+                                    <Card style={{ width: "22rem", border: "none" }} className='hove mb-4'>
+                                        <Card.Img variant='top' className='cd' src={element.imgdata}/>
+
+                                        <div className="card_body">
+                                            <div className="upper_data d-flex justify-content-between align-items-center">
+                                                <h4 className='mt-2'>{element.dish}</h4>
+                                                <span>{element.rating}&nbsp;★</span>
+                                            </div>
+
+                                            <div className="lower_data d-flex justify-content-between ">
+                                                <h5>{element.address}</h5>
+                                                <span>₹ {element.price}</span>
+                                            </div>
+                                            <div className="extra"></div>
+
+                                            <div className="last_data d-flex justify-content-between align-items-center">
+                                                <img src={element.arrimg} className='limg' alt="" />
+                                                <Button style={{ width: "150px", background: "#ff3054db", border: "none" }} variant='outline-light'
+                                                    className='mt-2 mb-2'
+                                                    onClick={()=>send(element)}
+                                                >Add TO Cart</Button>
+                                                <img src={element.delimg} className='laimg' alt="" />
+
+                                            </div>
+                                        </div>
+                                    </Card>
+                                </>
+                            )
+                        })
+                    }
+
+                </div>
+            </section>
         </>
         
     )

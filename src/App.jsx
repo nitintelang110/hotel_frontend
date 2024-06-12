@@ -7,12 +7,14 @@ import {Routes,Route} from "react-router-dom"
 import toast, { Toaster } from 'react-hot-toast';
 import Sucess from './components/Sucess';
 import Cancel from './components/Cancel';
-import Headers from './components/Headers';
+//import Headers from './components/Headers';
 import Home from './components/Home';
 import CartDetails from './components/CartDetails';
 import { useEffect } from "react";
-import {Navbar} from "./components/Navbar";
+//import {Navbar} from "./components/Navbar";
 import {Items} from "./components/Items";
+import {Userlogin} from "./components/Userlogin";
+
 
 function App() {
  
@@ -24,19 +26,20 @@ function App() {
   return (
     <>
       
-      <Headers />
+  
    
       <Routes>
-         
-         <Route  path='/' element={<Navbar/>}>
-          <Route  path='/' element={<Home />}/>
-          <Route path='/cart' element={<CartDetails />} />
-          <Route path='/items' element={<Items/>} />
-          <Route  path='/sucess' element={<Sucess />}/>
-          <Route path='/cancel' element={<Cancel />} />
-        </Route>
         
-     </Routes>
+          <Route  path='/' element={<Userlogin/>}/>
+        
+          <Route  path='/home' element={<Home />}>
+          <Route path='/home/cart' element={<CartDetails />} />
+          <Route path='/home/items' element={<Items/>} />
+          <Route  path='/home/sucess' element={<Sucess />}/>
+          <Route path='/home/cancel' element={<Cancel />} />
+          </Route>
+        
+      </Routes>
      <Toaster />
     </>
   )

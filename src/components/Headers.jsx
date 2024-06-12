@@ -4,7 +4,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 
-const Headers = () => {
+export const Headers = () => {
 const {carts} = useSelector((state)=>state.allCart);
 
 
@@ -39,4 +39,3 @@ const {carts} = useSelector((state)=>state.allCart);
     )
 }
 
-export default Headers
